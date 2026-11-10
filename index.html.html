@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SmartTrace Arsip</title>
+<style>
+:root{--bg:#F1F4F9;--sf:#fff;--ink:#14213D;--mu:#53637C;--ln:#D3DCE8;--bl:#0F4C81;--on:#fff;--ok:#1E7B4F;--bad:#B3261E;--l1:#2F855A;--l2:#2B6CB0;--l3:#9A5B0C;--l4:#B3261E;--soft:#E3EDF8;--gr:#E4F2EA;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1626;--sf:#16233A;--ink:#E6EDF7;--mu:#9BAAC2;--ln:#2A3B58;--bl:#7DB8F5;--on:#0E1626;--ok:#5ED19A;--bad:#FF9188;--l1:#5ED19A;--l2:#7DB8F5;--l3:#F0B35A;--l4:#FF9188;--soft:#1C3354;--gr:#143327}}
+:root[data-theme="dark"]{--bg:#0E1626;--sf:#16233A;--ink:#E6EDF7;--mu:#9BAAC2;--ln:#2A3B58;--bl:#7DB8F5;--on:#0E1626;--ok:#5ED19A;--bad:#FF9188;--l1:#5ED19A;--l2:#7DB8F5;--l3:#F0B35A;--l4:#FF9188;--soft:#1C3354;--gr:#143327}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+.w{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
+h1{font:700 1.7rem/1.2 Georgia,"Times New Roman",serif;margin:0 0 6px}
+h2{font-size:1.05rem;margin:0 0 10px}
+.sub{color:var(--mu);margin:0 0 16px;max-width:66ch}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:14px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+label{display:flex;flex-direction:column;font-size:.82rem;color:var(--mu);gap:4px}
+select,input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:8px 10px;min-height:42px}
+button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:9px 16px;min-height:42px;background:var(--bl);color:var(--on);font-weight:600}
+button.g{background:transparent;color:var(--bl);border:1px solid var(--ln)}
+button:disabled{opacity:.5;cursor:default}
+:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+.pill{display:inline-block;padding:1px 10px;border-radius:99px;font-size:.78rem;font-weight:600;border:1px solid currentColor;white-space:nowrap}
+.cols{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:900px){.cols{grid-template-columns:1.5fr 1fr}}
+.lot{font-weight:600;margin:12px 0 6px}
+.d{border:1px solid var(--ln);border-left:5px solid var(--c);border-radius:8px;padding:9px 12px;margin-bottom:8px;background:var(--bg)}
+.d.lk{opacity:.85}
+.m{font-size:.82rem;color:var(--mu)}
+.d button{min-height:34px;padding:4px 12px;margin-top:6px}
+.sys{background:var(--soft);color:var(--ink);font-size:.75rem;border-radius:6px;padding:1px 8px;margin-left:6px}
+.alert{background:var(--soft);border:1px solid var(--bad);color:var(--ink);border-radius:8px;padding:10px 12px;margin-bottom:10px;display:none}
+.alert.on{display:block}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--ln);vertical-align:top}
+.sc{max-height:230px;overflow:auto}
+.k{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.k div{background:var(--gr);border-radius:8px;padding:8px;text-align:center;font-size:.78rem;color:var(--mu)}
+.k b{display:block;font-size:1.2rem;color:var(--ok)}
+.v{display:none;position:relative;overflow:hidden}
+.v.on{display:block}
+.wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;opacity:.08;transform:rotate(-16deg);pointer-events:none;text-align:center}
+.fine{font-size:.8rem;color:var(--mu)}
+#gate{display:grid;grid-template-columns:1fr;min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+@media(min-width:860px){#gate{grid-template-columns:1.15fr 1fr}}
+#gate[hidden],#app[hidden]{display:none}
+.hero{background:#0F2A4A;color:#fff;padding:36px 28px;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.hero h1{font-size:clamp(1.6rem,4.5vw,2.5rem);max-width:18ch;margin:0}
+.lead{margin:0;max-width:46ch;color:#D3DCE8}
+.brand{display:flex;align-items:center;gap:10px;font:700 1.05rem Georgia,serif}
+.trace{width:100%;max-width:440px;height:auto;margin-top:6px}
+.login{display:flex;flex-direction:column;justify-content:center;padding:32px 24px;width:100%;max-width:440px;margin:0 auto}
+.login select,.login input{width:100%}
+.err{min-height:1.5em;margin:12px 0 0;font-weight:600;color:var(--bad)}
+.bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tb.on{background:var(--bl);color:var(--on);border-color:var(--bl)}
+.hb{background:none;color:var(--ink);font:700 1.05rem Georgia,serif;padding:4px 8px;min-height:36px}
+.gr{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.go2{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;height:auto;padding:12px;flex:1;min-width:180px}
+.go2 span{font-weight:400;font-size:.8rem;color:var(--mu)}
+.cols.one{grid-template-columns:1fr}
+.card{box-shadow:0 1px 2px rgba(20,33,61,.07);border-radius:12px;padding:16px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+h2{font-size:1.15rem}
+.d{border-radius:10px;padding:11px 14px}
+.d:hover,.go2:hover{border-color:var(--bl)}
+.k div{padding:12px 8px;font-size:.8rem}
+.k b{font-size:1.5rem;margin-top:2px}
+.lot{padding:6px 10px;background:var(--soft);border-radius:8px;margin:16px 0 8px}
+thead th{position:sticky;top:0;background:var(--sf)}
+</style>
+</head>
+<body>
+<main id="gate">
+<section class="hero">
+<div class="brand"><svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="2" y="7" width="30" height="23" rx="3" fill="none" stroke="#fff" stroke-width="2"/><path d="M2 12h12l3-5h-9" fill="none" stroke="#fff" stroke-width="2"/><circle cx="24" cy="22" r="4" fill="#5ED19A"/></svg><span>SmartTrace Arsip</span></div>
+<h1>Satu pencarian, semua dokumen satu komponen.</h1>
+<p class="lead">Sertifikat, kontrak, audit, garansi, dan tagihan dari sistem yang berbeda terkumpul dalam satu hasil. Akses dijaga sesuai peran.</p>
+<svg class="trace" viewBox="0 0 420 230" role="img" aria-label="Empat sistem arsip tersambung ke satu lot komponen">
+<g stroke="#5ED19A" stroke-width="2" fill="none"><path d="M112 30C170 30 190 105 238 112"/><path d="M112 85C160 85 190 108 238 113"/><path d="M112 145C160 145 190 120 238 117"/><path d="M112 200C170 200 190 128 238 120"/></g>
+<g fill="#fff" fill-opacity=".1" stroke="#fff" stroke-opacity=".55"><rect x="6" y="14" width="106" height="32" rx="6"/><rect x="6" y="69" width="106" height="32" rx="6"/><rect x="6" y="129" width="106" height="32" rx="6"/><rect x="6" y="184" width="106" height="32" rx="6"/></g>
+<g fill="#fff" font-size="12" font-family="Segoe UI,system-ui,sans-serif"><text x="18" y="35">ERP/SAP</text><text x="18" y="90">Arsip pindai</text><text x="18" y="150">Sistem tagihan</text><text x="18" y="205">Sistem teknik</text></g>
+<rect x="238" y="90" width="176" height="54" rx="10" fill="#5ED19A"/><text x="326" y="113" text-anchor="middle" font-size="12" fill="#0F2A4A" font-family="Segoe UI,system-ui,sans-serif">Lot B-17</text><text x="326" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#0F2A4A" font-family="Segoe UI,system-ui,sans-serif">Baut sasis</text>
+</svg>
+</section>
+<section class="login">
+<h2>Masuk</h2>
+<p class="m" style="margin:0 0 14px">Pilih peran, lalu isi kode MFA untuk membuka arsip.</p>
+<label>Peran<select id="role"><option value="2">Staf administrasi</option><option value="3" selected>Auditor mutu</option><option value="4">Manajer teknik</option></select></label>
+<label style="margin-top:12px">Kode MFA<input id="mfa" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="6 digit"></label>
+<div style="height:14px"></div>
+<button id="lg" type="button" style="width:100%">Masuk ke arsip</button>
+<p id="st" class="err" role="status"></p>
+<p class="fine" style="margin:14px 0 0">Data pada halaman ini adalah contoh.</p>
+</section>
+</main>
+<div class="w" id="app" hidden>
+
+
+
+<nav class="card bar" aria-label="Menu utama"><button class="hb" data-v="dash" type="button">SmartTrace Arsip</button><span id="who" class="pill" style="color:var(--ok)"></span><div class="tabs"><button class="g tb" data-v="dash" type="button">Dasbor</button><button class="g tb" data-v="cari" type="button">Pencarian</button><button class="g tb" data-v="log" type="button">Log akses</button><button class="g tb" data-v="hijau" type="button">Arsip hijau</button><button id="out" class="g" type="button">Keluar</button></div></nav>
+
+<div id="al" class="alert" role="alert"><b>Penjaga akses:</b> pembukaan dokumen rahasia terlalu banyak dalam waktu singkat. Akses ditahan dan menunggu verifikasi admin. <button class="g" id="vf" type="button" style="margin-left:8px">Verifikasi admin (demo)</button></div>
+
+<section class="card" data-view="dash" id="dash"><h2>Dasbor: <span id="dn"></span></h2><p class="sub" id="dd" style="margin-bottom:12px"></p>
+<div class="k"><div>Dokumen tertaut<b id="d1">0</b></div><div>Dapat dibuka<b id="d2">0</b></div><div>Terkunci<b id="d3" style="color:var(--bad)">0</b></div></div>
+<div class="gr"><button class="g go2" data-go="cari" type="button">Cari dokumen komponen<span>Satu pencarian untuk semua sistem</span></button><button class="g go2" data-go="log" type="button">Log akses<span id="g2">0 aktivitas tercatat</span></button><button class="g go2" data-go="hijau" type="button">Arsip hijau<span id="g3"></span></button></div></section>
+<div class="cols" id="cols">
+<section class="card">
+<h2>Pencarian dokumen</h2>
+<div class="row" style="align-items:stretch"><input type="search" id="q" style="flex:1;min-width:200px" placeholder="Contoh: lot B-17, pemasok Delta, garansi rem" aria-label="Kata kunci"><button id="go" type="button">Cari</button><button class="g" id="rst" type="button">Hapus pencarian</button><button class="g" id="all" type="button">Unduh semua hasil</button></div>
+<p class="fine" style="margin:8px 0 0">Coba: <button class="g ex" type="button" style="min-height:30px;padding:2px 10px">lot B-17</button> <button class="g ex" type="button" style="min-height:30px;padding:2px 10px">brake</button> <button class="g ex" type="button" style="min-height:30px;padding:2px 10px">steering</button> <button class="g ex" type="button" style="min-height:30px;padding:2px 10px">invoice</button></p>
+<p class="m" id="ct" style="margin:10px 0 0">Masuk dulu untuk mulai mencari.</p>
+<div id="rs"></div>
+<div class="card v" id="vw" style="margin:12px 0 0"><div class="wm" id="wm"></div><h2 id="vt"></h2><p id="vb"></p><p class="m" id="vm"></p><button class="g" id="vc" type="button">Tutup dokumen</button></div>
+</section>
+<aside>
+<div class="card"><h2>Waktu temu kembali</h2>
+<div class="k" style="grid-template-columns:1fr 1fr"><div>Pencarian manual<b style="color:var(--ink)">20 menit</b></div><div>SmartTrace<b id="ts">-</b></div></div>
+<p class="fine" id="sv">Lakukan satu pencarian untuk melihat penghematan waktu.</p></div>
+<div class="card"><h2>Log akses</h2><div class="sc"><table><thead><tr><th>Waktu</th><th>Peran</th><th>Aksi</th><th>Status</th></tr></thead><tbody id="lg2"><tr><td colspan="4" class="m">Belum ada aktivitas.</td></tr></tbody></table></div></div>
+</aside>
+</div>
+
+<section class="card">
+<h2>Arsip hijau</h2>
+<div class="k"><div>Dokumen ganda ditemukan<b id="k1">0</b></div><div>Kertas dihemat (lembar)<b id="k2">0</b></div><div>Ruang dibebaskan (MB)<b id="k3">0</b></div></div>
+<p class="fine">AI menemukan salinan ganda. Hanya auditor mutu atau manajer teknik yang boleh menyetujui pemusnahan versi kertas dan membatalkannya.</p>
+<div id="dp"></div><button class="g" id="ua" type="button" style="margin-top:6px">Batalkan semua persetujuan</button>
+</section>
+
+</div>
+
+<script>
+var LV=["","Umum","Terbatas","Rahasia","Sangat rahasia"],LC=["","var(--l1)","var(--l2)","var(--l3)","var(--l4)"];
+var RN={2:"Staf administrasi",3:"Auditor mutu",4:"Manajer teknik"};
+var LOT={"B-17":"baut sasis | Pemasok ABC","R-22":"sistem rem | Pemasok Sigma","K-05":"komponen kemudi | Pemasok Delta","-":"Dokumen umum"};
+var D=[
+["QA-26-0123","Sertifikat uji tarik baut sasis","Sertifikat","ERP/SAP","B-17",2026,3,"certificate bolt"],
+["SC-25-0456","Kontrak pemasok baut","Kontrak","Arsip pindai","B-17",2025,3,"contract supplier bolt"],
+["AU-26-0007","Laporan audit mutu Pemasok ABC","Laporan","ERP/SAP","B-17",2026,3,"inspeksi audit supplier"],
+["WR-26-0044","Riwayat klaim garansi lot B-17","Garansi","ERP/SAP","B-17",2026,2,"warranty klaim"],
+["IV-26-0311","Tagihan Pemasok ABC lot B-17","Tagihan","Sistem tagihan","B-17",2026,2,"invoice"],
+["EN-24-0802","Gambar teknis rangka sasis","Gambar teknik","Sistem teknik","B-17",2024,4,"blueprint desain"],
+["QA-26-0131","Sertifikat uji sistem rem","Sertifikat","ERP/SAP","R-22",2026,3,"brake certificate"],
+["SC-26-0099","Kontrak pemasok sistem rem","Kontrak","Arsip pindai","R-22",2026,3,"brake contract supplier"],
+["AU-26-0012","Laporan audit mutu Pemasok Sigma","Laporan","ERP/SAP","R-22",2026,3,"inspeksi audit brake"],
+["WR-26-0051","Riwayat klaim garansi rem","Garansi","ERP/SAP","R-22",2026,2,"brake warranty klaim"],
+["RC-24-0033","Dokumen penarikan produk kemudi","Penarikan produk","ERP/SAP","K-05",2024,3,"recall steering"],
+["SC-24-0210","Kontrak pemasok kemudi","Kontrak","Arsip pindai","K-05",2024,3,"steering contract supplier"],
+["QA-24-0188","Sertifikat uji kemudi","Sertifikat","ERP/SAP","K-05",2024,3,"steering certificate"],
+["IV-24-0222","Tagihan Pemasok Delta","Tagihan","Sistem tagihan","K-05",2024,2,"invoice"],
+["HR-25-0112","Panduan keselamatan kerja","Prosedur","Arsip pindai","-",2025,1,"safety k3"]];
+var DUP=[["Salinan pindai kedua: kontrak baut (SC-25-0456)",6,18],["Salinan surel: audit Pemasok ABC (AU-26-0007)",8,22],["Versi lama: panduan keselamatan (HR-25-0112)",10,3],["Salinan pindai kedua: kontrak kemudi (SC-24-0210)",6,15]];
+var SYN={baut:["bolt"],rem:["brake"],kemudi:["steering"],garansi:["warranty","klaim"],kontrak:["contract"],sertifikat:["certificate"],tagihan:["invoice"],pemasok:["supplier"],audit:["inspeksi"],penarikan:["recall"],gambar:["blueprint"]};
+var CODES={"2":"111222","3":"333444","4":"555666"};var me=null,held=false,opens=0,rows=[],paper=0,mb=0,done={};
+var $=function(i){return document.getElementById(i)};
+function T(){return new Date().toLocaleTimeString("id-ID")}
+function E(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
+function log(a,s){rows.unshift([T(),me?RN[me]:"-",a,s]);$("lg2").innerHTML=rows.slice(0,50).map(function(r){var c=r[3]==="Diizinkan"?"var(--ok)":"var(--bad)";return "<tr><td>"+r[0]+"</td><td>"+r[1]+"</td><td>"+E(r[2])+"</td><td style=\"color:"+c+";font-weight:600\">"+r[3]+"</td></tr>"}).join("")}
+$("lg").onclick=function(){
+  if($("mfa").value.trim()!==CODES[$("role").value]){me=null;$("st").style.color="var(--bad)";$("st").textContent="Kode MFA salah";log("Percobaan masuk","Ditolak");return}
+  me=+$("role").value;held=false;opens=0;$("al").classList.remove("on");
+  $("st").style.color="var(--ok)";$("st").textContent="Masuk: "+RN[me]+" (akses hingga "+LV[me]+")";
+  log("Masuk dengan MFA","Diizinkan");find();dups();
+  $("gate").hidden=true;$("app").hidden=false;view("dash");$("who").textContent="Masuk: "+RN[me]+" (akses hingga "+LV[me]+")";window.scrollTo(0,0);
+};
+$("vf").onclick=function(){held=false;opens=0;$("al").classList.remove("on");log("Verifikasi admin","Diizinkan")};
+function expand(q){return q.toLowerCase().split(/\s+/).filter(Boolean).map(function(t){return [t].concat(SYN[t]||[])})}
+function find(){
+  if(!me){$("ct").textContent="Masuk dulu (pilih peran dan isi kode MFA) untuk mulai mencari.";$("rs").innerHTML="";return}
+  var t0=performance.now(),q=$("q").value.trim(),g=expand(q),hits=[];
+  D.forEach(function(d,i){
+    var h=("lot "+d[4]+" "+d[1]+" "+d[2]+" "+d[3]+" "+d[7]+" "+LOT[d[4]]).toLowerCase(),ok=true;
+    g.forEach(function(s){var m=false;s.forEach(function(x){if(h.indexOf(x)>-1)m=true});if(!m)ok=false});
+    if(ok)hits.push(i)});
+  var ms=Math.max(performance.now()-t0,0.01),open=0,lock=0,out="",cur=null;
+  hits.sort(function(a,b){return D[a][4]<D[b][4]?-1:D[a][4]>D[b][4]?1:0});
+  hits.forEach(function(i){var d=D[i];
+    if(d[4]!==cur){cur=d[4];out+="<div class=\"lot\">Lot "+(cur==="-"?"umum":cur)+": "+E(LOT[cur])+"</div>"}
+    var al=d[6]<=me;if(al)open++;else lock++;
+    var b="<span class=\"pill\" style=\"color:"+LC[d[6]]+"\">"+LV[d[6]]+"</span>";
+    out+="<div class=\"d"+(al?"":" lk")+"\" style=\"--c:"+(al?LC[d[6]]:"var(--l4)")+"\"><b>"+E(d[1])+"</b> "+b+"<span class=\"sys\">"+d[3]+"</span><div class=\"m\">"+d[0]+" | "+d[2]+" | "+d[5]+"</div>"+(al?"":"<div class=\"m\">Terkunci: peran Anda belum berhak membuka.</div>")+"<button class=\""+(al?"":"g")+"\" data-i=\""+i+"\" type=\"button\">"+(al?"Buka dokumen":"Coba buka")+"</button></div>"});
+  $("rs").innerHTML=out||"<p class=\"m\">Tidak ada dokumen cocok. Coba kata kunci lain.</p>";
+  $("ct").textContent=hits.length+" dokumen tertaut dari "+new Set(hits.map(function(i){return D[i][3]})).size+" sistem: "+open+" dapat dibuka, "+lock+" terkunci.";
+  var s=ms/1000;$("ts").textContent=s.toLocaleString("id-ID",{maximumFractionDigits:3})+" detik";
+  $("sv").textContent="Hemat sekitar "+((1-s/1200)*100).toLocaleString("id-ID",{maximumFractionDigits:2})+"% dibanding pencarian manual (sekitar 20 menit).";
+  log("Cari: "+(q||"(semua)"),"Diizinkan");
+}
+function openDoc(i){
+  var d=D[i];
+  if(held){log("Buka "+d[0],"Ditahan");return false}
+  if(d[6]>me){log("Buka "+d[0],"Ditolak");$("vw").classList.remove("on");return false}
+  if(d[6]>=3){opens++;if(opens>4){held=true;$("al").classList.add("on");log("Pembukaan massal terdeteksi","Ditahan");return false}}
+  log("Buka "+d[0],"Diizinkan");
+  $("vt").textContent=d[1];$("vb").textContent="Ringkasan contoh: dokumen "+d[2].toLowerCase()+" untuk lot "+d[4]+", bersumber dari "+d[3]+".";
+  $("vm").textContent=d[0]+" | "+LV[d[6]]+" | dibuka oleh "+RN[me]+" pukul "+T();$("wm").textContent=RN[me]+" • "+T();$("vw").classList.add("on");return true;
+}
+$("rs").addEventListener("click",function(e){var i=e.target.getAttribute&&e.target.getAttribute("data-i");if(i===null||i===undefined)return;if(!openDoc(+i)&&held)$("al").scrollIntoView({behavior:"smooth",block:"center"});else if(D[+i][6]>me)alert("Akses ditolak. Dokumen tingkat "+LV[D[+i][6]]+" tidak dapat dibuka oleh "+RN[me]+". Percobaan dicatat di log.")});
+$("all").onclick=function(){if(!me)return;var b=document.querySelectorAll("#rs button[data-i]");for(var k=0;k<b.length;k++){if(held)break;openDoc(+b[k].getAttribute("data-i"))}};
+$("go").onclick=find;
+var ROLEINFO={"2":"Anda dapat mencari dan membuka dokumen tingkat Umum dan Terbatas. Percobaan membuka dokumen yang lebih rahasia dicatat di log.","3":"Anda dapat membuka dokumen sampai tingkat Rahasia dan menyetujui pemusnahan arsip ganda.","4":"Anda dapat membuka semua tingkat, termasuk Sangat rahasia, dan menyetujui pemusnahan arsip ganda."};
+$("q").closest("section").dataset.view="cari";$("ts").closest(".card").dataset.view="cari";$("lg2").closest(".card").dataset.view="log";$("dp").closest("section").dataset.view="hijau";
+function view(v){
+  document.querySelectorAll("[data-view]").forEach(function(e){e.hidden=e.dataset.view!==v});
+  $("cols").hidden=(v==="dash"||v==="hijau");$("cols").className=v==="log"?"cols one":"cols";
+  document.querySelectorAll(".tb").forEach(function(b){var on=b.getAttribute("data-v")===v;b.classList.toggle("on",on);if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  if(v==="dash"&&me){var n=D.filter(function(d){return d[6]<=me}).length;$("dn").textContent=RN[me];$("dd").textContent=ROLEINFO[me];$("d1").textContent=D.length;$("d2").textContent=n;$("d3").textContent=D.length-n;$("g2").textContent=rows.length+" aktivitas tercatat";$("g3").textContent=(DUP.length-Object.keys(done).length)+" dokumen ganda menunggu"}
+  window.scrollTo(0,0)}
+document.querySelectorAll("[data-v],[data-go]").forEach(function(b){b.onclick=function(){view(b.getAttribute("data-v")||b.getAttribute("data-go"))}});
+
+$("role").onchange=function(){$("mfa").value="";$("st").textContent=""};
+$("mfa").addEventListener("keydown",function(e){if(e.key==="Enter")$("lg").click()});
+$("out").onclick=function(){log("Keluar","Diizinkan");me=null;held=false;opens=0;$("vw").classList.remove("on");$("rs").innerHTML="";$("mfa").value="";$("st").style.color="var(--mu)";$("st").textContent="Anda sudah keluar";$("app").hidden=true;$("gate").hidden=false;dups();window.scrollTo(0,0)};
+$("q").addEventListener("keydown",function(e){if(e.key==="Enter")find()});
+$("vc").onclick=function(){$("vw").classList.remove("on");log("Tutup dokumen","Diizinkan")};
+$("rst").onclick=function(){$("q").value="";$("vw").classList.remove("on");find()};
+$("ua").onclick=function(){if(!me)return;if(me<3){log("Batalkan semua pemusnahan","Ditolak");alert("Hanya auditor mutu atau manajer teknik yang boleh membatalkan. Percobaan dicatat.");return}if(!Object.keys(done).length)return;done={};paper=0;mb=0;log("Batalkan semua pemusnahan","Diizinkan");dups()};
+document.querySelectorAll(".ex").forEach(function(b){b.onclick=function(){$("q").value=b.textContent;find()}});
+function dups(){
+  $("k1").textContent=DUP.length;$("k2").textContent=paper;$("k3").textContent=mb;
+  $("dp").innerHTML=me?DUP.map(function(d,i){return "<div class=\"d\" style=\"--c:var(--ok)\"><b>"+E(d[0])+"</b><div class=\"m\">"+d[1]+" lembar kertas | "+d[2]+" MB</div>"+(done[i]?"<span class=\"pill\" style=\"color:var(--ok)\">Disetujui</span> <button class=\"g\" data-u=\""+i+"\" type=\"button\">Batalkan pemusnahan</button>":"<button data-p=\""+i+"\" type=\"button\">Setujui pemusnahan kertas</button>")+"</div>"}).join(""):"<p class=\"m\">Masuk untuk melihat saran AI.</p>";
+}
+$("dp").addEventListener("click",function(e){var u=e.target.getAttribute&&e.target.getAttribute("data-u");if(u!==null&&u!==undefined){u=+u;if(me<3){log("Batalkan pemusnahan "+(u+1),"Ditolak");alert("Hanya auditor mutu atau manajer teknik yang boleh membatalkan. Percobaan dicatat.");return}if(!done[u])return;delete done[u];paper-=DUP[u][1];mb-=DUP[u][2];log("Batalkan pemusnahan "+(u+1),"Diizinkan");dups();return}var p=e.target.getAttribute&&e.target.getAttribute("data-p");if(p===null||p===undefined)return;p=+p;
+  if(me<3){log("Setujui pemusnahan "+(p+1),"Ditolak");alert("Hanya auditor mutu atau manajer teknik yang boleh menyetujui. Percobaan dicatat.");return}
+  done[p]=1;paper+=DUP[p][1];mb+=DUP[p][2];log("Setujui pemusnahan "+(p+1),"Diizinkan");dups()});
+dups();
+</script>
+</body>
+</html>
